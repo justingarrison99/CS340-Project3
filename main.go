@@ -90,7 +90,6 @@ func main() {
 		initialtaskQ.PushBack(s.Text())
 		count++
 	}
-	println(count)
 
 	err = s.Err()
 	if err != nil {
