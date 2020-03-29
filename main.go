@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strconv"
 	"sync"
 )
 
@@ -74,7 +75,20 @@ func readCompleted(done chan bool) {
 
 func main() {
 
-	fptr := flag.String("fpath", "textdata.txt", "file path to read from")
+	if len(os.Args) != 3 {
+		fmt.Println("\nUsage:", "<filename.txt>,", "<# of Consumers>")
+		return
+	}
+
+	filename := os.Args[1]
+	numberOfConsumers, err := strconv.Atoi(os.Args[2])
+	if err != nil {
+		fmt.Println("\nmust enter number for <# of Consumers>")
+		fmt.Println("Usage:", "<filename.txt>,", "<# of Consumers>")
+		os.Exit(1)
+	}
+
+	fptr := flag.String("fpath", filename, "file path to read from")
 	flag.Parse()
 
 	f, err := os.Open(*fptr)
@@ -100,6 +114,6 @@ func main() {
 	go produceTask()
 	done := make(chan bool)
 	go readCompleted(done)
-	createConsumers(5)
+	createConsumers(numberOfConsumers)
 	<-done
 }
