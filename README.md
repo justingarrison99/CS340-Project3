@@ -1,8 +1,8 @@
 # CS340-Project3
 
-Command Line Usage: go run main.go <txt file> <# of Consumers>
+Command Line Usage: go run main.go <.txt path> <# of Consumers>
 
-Example: go run main.go textdata.txt 4
+    Example: go run main.go textdata.txt 4
 
 
     Begins the program with 4 Consumers 
