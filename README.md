@@ -1,6 +1,10 @@
 # CS340-Project3
 
-command line to run program: go run main.go
+Command Line Usage: go run main.go <path to file> <# of Consumers>
+
+Example: go run main.go textdata.txt 4
+    Begins the program with 4 Consumers 
+    This example assumes that textdata.txt is in the same directory
 
 
 
