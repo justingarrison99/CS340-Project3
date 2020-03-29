@@ -7,12 +7,11 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
+	"regexp"
 	"sync"
-	"time"
 )
 
-var initialtaskQ = list.New()
+var initialTaskQ = list.New()
 
 var tasks = make(chan Task, 10)
 var completedTasks = make(chan Completed, 10)
@@ -47,30 +46,33 @@ func createConsumers(numComsumers int) {
 }
 
 func produceTask() {
-	for i := 0; initialtaskQ.Len() > 0; i++ {
-		e := initialtaskQ.Front() // First element
+	for i := 0; initialTaskQ.Len() > 0; i++ {
+		e := initialTaskQ.Front() // First element
 		str := fmt.Sprintf("%v", e.Value)
 		task := Task{textdata: str, taskid: i}
 		tasks <- task
-		initialtaskQ.Remove(e) // Dequeue
+		initialTaskQ.Remove(e) // Dequeue
 	}
 	close(tasks)
 }
 
 func wordCount(line string) int {
-	strArray := strings.Split(line, " ")
-	return len(strArray)
+	re := regexp.MustCompile(`[\S]+`)
+	results := re.FindAllString(line, -1)
+	return len(results)
 }
 
 func readCompleted(done chan bool) {
+	wordtotal := 0
 	for task := range completedTasks {
-		fmt.Printf("Task id: %d, input line: %s , word count: %d\n", task.taskid, task.textdata, task.wordcount)
+		fmt.Printf("| Task ID: %d | word count: %d | %s | \n", task.taskid, task.wordcount, task.textdata)
+		wordtotal += task.wordcount
 	}
+	fmt.Printf("| Total Word Count: %d | \n", wordtotal)
 	done <- true
 }
 
 func main() {
-	startTime := time.Now()
 
 	fptr := flag.String("fpath", "textdata.txt", "file path to read from")
 	flag.Parse()
@@ -87,7 +89,7 @@ func main() {
 	s := bufio.NewScanner(f)
 	count := 0
 	for i := 0; s.Scan(); i++ {
-		initialtaskQ.PushBack(s.Text())
+		initialTaskQ.PushBack(s.Text())
 		count++
 	}
 
@@ -95,13 +97,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	go produceTask()
 	done := make(chan bool)
 	go readCompleted(done)
-	createConsumers(10)
+	createConsumers(5)
 	<-done
-	endTime := time.Now()
-	diff := endTime.Sub(startTime)
-	fmt.Println("total time taken ", diff.Seconds(), "seconds")
 }
