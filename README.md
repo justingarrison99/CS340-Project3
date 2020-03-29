@@ -1,6 +1,9 @@
 # CS340-Project3
 
-commandline to run program:    go run main.go
+command line to run program: go run main.go
+
+
+
 
 I've just been using "GoLand" to run this code. 
 
