@@ -1,5 +1,7 @@
 # CS340-Project3
 
+This project is written in Go 
+
 Command Line Usage: go run main.go <.txt path> <# of Consumers>
 
     Example: go run main.go textdata.txt 4
