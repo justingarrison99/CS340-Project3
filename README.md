@@ -1,4 +1,8 @@
 # CS340-Project3
+# Justin Garrison & Giuliana Tosi 
+
+
+
 
 This project is written in Go 
 
